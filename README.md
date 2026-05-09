@@ -10,7 +10,7 @@ This repository represents the initial development phase of the College Alert sy
 - **Secure Authentication**: User registration and login using Firebase Authentication.
 - **Real-time Alerts**: Integration with Firebase Realtime Database to receive instant notifications.
 - **Alert History**: Local storage of alerts using Room Database for offline access.
-- **User Profiles**: Basic student profile management and role-based access.
+- **User Profiles**: Basic student profile management and role-based access of the app.
 
 ### 🛠️ Tech Stack
 - **Language**: Kotlin
@@ -35,6 +35,5 @@ This repository represents the initial development phase of the College Alert sy
 - **Push Notifications**: Full integration with Firebase Cloud Messaging (FCM).
 - **Advanced Filtering**: Categorizing alerts by department and priority.
 - **Attachments**: Support for adding images or documents to alerts.
-
 ---
 *Developed as part of the Mobile App Development Project.*
