@@ -44,6 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Sign Up Activity -->
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
@@ -56,11 +58,6 @@
         <!-- Admin Activity -->
         <activity
             android:name=".AdminActivity"
-            android:exported="false" />
-
-        <!-- Sign Up Activity (optional) -->
-        <activity
-            android:name=".SignUpActivity"
             android:exported="false" />
 
         <!-- For handling notification clicks -->

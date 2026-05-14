@@ -14,7 +14,13 @@ import java.util.Locale
 
 class NoticeAdapter(
     private var notices: List<RealtimeAlert>,
-    private val onDeleteClick: (RealtimeAlert) -> Unit
+    private var currentUserId: String = "",
+    private var isAdmin: Boolean = false,
+    private val onDeleteClick: (RealtimeAlert) -> Unit,
+    private val onLikeClick: ((RealtimeAlert) -> Unit)? = null,
+    private val onDislikeClick: ((RealtimeAlert) -> Unit)? = null,
+    private val onCommentClick: ((RealtimeAlert) -> Unit)? = null,
+    private val onShareClick: ((RealtimeAlert) -> Unit)? = null
 ) : RecyclerView.Adapter<NoticeAdapter.NoticeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoticeViewHolder {
@@ -29,8 +35,10 @@ class NoticeAdapter(
 
     override fun getItemCount() = notices.size
 
-    fun updateData(newNotices: List<RealtimeAlert>) {
+    fun updateData(newNotices: List<RealtimeAlert>, userId: String = currentUserId, admin: Boolean = isAdmin) {
         notices = newNotices
+        currentUserId = userId
+        isAdmin = admin
         notifyDataSetChanged()
     }
 
@@ -43,7 +51,13 @@ class NoticeAdapter(
         private val priorityTextView: TextView = itemView.findViewById(R.id.priorityTextView)
         private val deleteButton: MaterialButton = itemView.findViewById(R.id.deleteButton)
         private val typeEmojiTextView: TextView = itemView.findViewById(R.id.typeEmojiTextView)
+        private val authorTextView: TextView = itemView.findViewById(R.id.authorTextView)
         private val priorityBar: View = itemView.findViewById(R.id.priorityBar)
+        private val likeButton: MaterialButton = itemView.findViewById(R.id.likeButton)
+        private val dislikeButton: MaterialButton = itemView.findViewById(R.id.dislikeButton)
+        private val commentButton: MaterialButton = itemView.findViewById(R.id.commentButton)
+        private val shareButton: MaterialButton = itemView.findViewById(R.id.shareButton)
+        private val interactionLayout: View = itemView.findViewById(R.id.interactionLayout)
 
         fun bind(notice: RealtimeAlert) {
             titleTextView.text = notice.title
@@ -78,8 +92,68 @@ class NoticeAdapter(
             cardView.setCardBackgroundColor(ContextCompat.getColor(itemView.context, bgColor))
             priorityTextView.setTextColor(ContextCompat.getColor(itemView.context, barColor))
 
+            // Hide category-related views if it's News
+            if (notice.type == "NEWS") {
+                itemView.findViewById<View>(R.id.labelsLayout).visibility = View.GONE
+                priorityBar.visibility = View.GONE
+                typeEmojiTextView.visibility = View.GONE
+            } else {
+                itemView.findViewById<View>(R.id.labelsLayout).visibility = View.VISIBLE
+                priorityBar.visibility = View.VISIBLE
+                typeEmojiTextView.visibility = View.VISIBLE
+            }
+
+            authorTextView.text = if (notice.createdByName.isNotEmpty()) "By: ${notice.createdByName}" else "By: Anonymous"
+
+            // Show delete button only for authors or admins
+            deleteButton.visibility = if (isAdmin || notice.createdBy == currentUserId) View.VISIBLE else View.GONE
+
             deleteButton.setOnClickListener {
                 onDeleteClick(notice)
+            }
+
+            // Interaction Bar Logic
+            if (notice.type == "NEWS") {
+                interactionLayout.visibility = View.VISIBLE
+                
+                // Update Like Button
+                val likeCount = notice.likes.size
+                likeButton.text = likeCount.toString()
+                val isLiked = notice.likes.containsKey(currentUserId)
+                if (isLiked) {
+                    likeButton.setIconResource(R.drawable.ic_like)
+                    likeButton.setIconTintResource(R.color.priority_high)
+                    likeButton.setTextColor(ContextCompat.getColor(itemView.context, R.color.priority_high))
+                } else {
+                    likeButton.setIconResource(R.drawable.ic_like)
+                    likeButton.setIconTintResource(R.color.text_hint)
+                    likeButton.setTextColor(ContextCompat.getColor(itemView.context, R.color.text_hint))
+                }
+
+                // Update Dislike Button
+                val dislikeCount = notice.dislikes.size
+                dislikeButton.text = dislikeCount.toString()
+                val isDisliked = notice.dislikes.containsKey(currentUserId)
+                if (isDisliked) {
+                    dislikeButton.setIconResource(R.drawable.ic_dislike)
+                    dislikeButton.setIconTintResource(R.color.secondary)
+                    dislikeButton.setTextColor(ContextCompat.getColor(itemView.context, R.color.secondary))
+                } else {
+                    dislikeButton.setIconResource(R.drawable.ic_dislike)
+                    dislikeButton.setIconTintResource(R.color.text_hint)
+                    dislikeButton.setTextColor(ContextCompat.getColor(itemView.context, R.color.text_hint))
+                }
+
+                // Update Comment Button
+                val commentCount = notice.comments.size
+                commentButton.text = if (commentCount > 0) "$commentCount" else "Comment"
+
+                likeButton.setOnClickListener { onLikeClick?.invoke(notice) }
+                dislikeButton.setOnClickListener { onDislikeClick?.invoke(notice) }
+                commentButton.setOnClickListener { onCommentClick?.invoke(notice) }
+                shareButton.setOnClickListener { onShareClick?.invoke(notice) }
+            } else {
+                interactionLayout.visibility = View.GONE
             }
         }
     }
