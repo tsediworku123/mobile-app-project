@@ -4,7 +4,7 @@ data class User(
     val uid: String = "",
     val email: String = "",
     val name: String = "",
-    val role: String = "student", // "admin" or "student"
+    val role: String = "student",
     val department: String = "",
     val fcmToken: String = ""
 )

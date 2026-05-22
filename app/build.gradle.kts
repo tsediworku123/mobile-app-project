@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
 }
@@ -13,11 +12,36 @@ android {
         applicationId = "com.example.collagealert"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        // Get the default debug configuration
+        val debugConfig = getByName("debug")
+
+        // Create a release configuration that defaults to debug keys.
+        // This avoids build failures when a specific release keystore is not yet provided.
+        create("release") {
+            storeFile = debugConfig.storeFile
+            storePassword = debugConfig.storePassword
+            keyAlias = debugConfig.keyAlias
+            keyPassword = debugConfig.keyPassword
+        }
+
+        // Android Studio may inject an 'externalOverride' signing configuration.
+        // We define it here to point to the debug keystore, which fixes the 
+        // "Keystore file not found" error if an invalid external path was provided.
+        register("externalOverride") {
+            storeFile = debugConfig.storeFile
+            storePassword = debugConfig.storePassword
+            keyAlias = debugConfig.keyAlias
+            keyPassword = debugConfig.keyPassword
+        }
+    }
+
     buildFeatures {
         viewBinding = true
     }
@@ -25,6 +49,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            // Use the release signing configuration (which is currently aliased to debug)
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -35,10 +61,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
@@ -55,6 +77,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -68,6 +91,9 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Glide - image loading
+    implementation(libs.glide)
 
     // Testing
     testImplementation(libs.junit)

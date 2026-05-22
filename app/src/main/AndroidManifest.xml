@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".CollegeAlertApplication"
+        android:name=".CollageAlertApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -44,6 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Sign Up Activity -->
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
@@ -56,11 +58,6 @@
         <!-- Admin Activity -->
         <activity
             android:name=".AdminActivity"
-            android:exported="false" />
-
-        <!-- Sign Up Activity (optional) -->
-        <activity
-            android:name=".SignUpActivity"
             android:exported="false" />
 
         <!-- For handling notification clicks -->

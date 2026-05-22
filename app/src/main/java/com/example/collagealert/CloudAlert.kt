@@ -9,7 +9,7 @@ data class CloudAlert(
     val timestamp: Long = System.currentTimeMillis(),
     val createdBy: String = "",
     val createdByName: String = "",
-    val targetAudience: String = "ALL", // "ALL", "DEPARTMENT", "SPECIFIC"
+    val targetAudience: String = "ALL",
     val department: String = "",
     val readBy: List<String> = emptyList()
 )

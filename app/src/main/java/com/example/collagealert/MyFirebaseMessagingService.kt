@@ -15,14 +15,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        // Check if message contains a notification payload
         remoteMessage.notification?.let {
             sendNotification(it.title ?: "New Alert", it.body ?: "")
         }
 
-        // Also check for data payload
         remoteMessage.data.let { data ->
-            // Handle data message
             val title = data["title"] ?: "New Alert"
             val message = data["message"] ?: ""
             sendNotification(title, message)
@@ -31,7 +28,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        // Send token to your server if needed
         saveTokenToFirestore(token)
     }
 
@@ -46,7 +42,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = "college_alerts_channel"
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notification) // Create this icon
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(true)
@@ -55,7 +51,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Create notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
@@ -72,7 +67,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun saveTokenToFirestore(token: String) {
-        // Get current user from FirebaseAuth
         val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()

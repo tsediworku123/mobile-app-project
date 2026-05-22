@@ -24,7 +24,6 @@ class AlertRepository(private val alertDao: AlertDao) {
 
     suspend fun insert(alert: AlertData) {
         withContext(Dispatchers.IO) {
-            // Check if it was previously deleted
             val existing = alertDao.getAlertById(alert.id)
             if (existing != null && existing.isDeleted) {
                 return@withContext
@@ -41,7 +40,6 @@ class AlertRepository(private val alertDao: AlertDao) {
 
     suspend fun delete(alert: AlertData) {
         withContext(Dispatchers.IO) {
-            // Use soft delete so it doesn't reappear on sync
             alertDao.softDelete(alert.id)
         }
     }

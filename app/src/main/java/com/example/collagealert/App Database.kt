@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [AlertEntity::class],
-    version = 2, // Incremented to version 2
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

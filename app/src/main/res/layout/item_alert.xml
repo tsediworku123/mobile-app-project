@@ -19,7 +19,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Type Icon Container -->
         <View
             android:id="@+id/iconBg"
             android:layout_width="48dp"
@@ -38,7 +37,6 @@
             app:layout_constraintStart_toStartOf="@id/iconBg"
             app:layout_constraintTop_toTopOf="@id/iconBg"/>
 
-        <!-- Title and Time -->
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="0dp"
@@ -64,7 +62,6 @@
             app:layout_constraintStart_toStartOf="@id/titleTextView"
             app:layout_constraintTop_toBottomOf="@id/titleTextView"/>
 
-        <!-- Status Badge -->
         <TextView
             android:id="@+id/readStatusTextView"
             android:layout_width="wrap_content"
@@ -78,7 +75,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/titleTextView"/>
 
-        <!-- Message -->
         <TextView
             android:id="@+id/messageTextView"
             android:layout_width="0dp"
@@ -93,7 +89,6 @@
             app:layout_constraintStart_toStartOf="@id/iconBg"
             app:layout_constraintTop_toBottomOf="@id/iconBg"/>
 
-        <!-- Bottom Priority Bar -->
         <View
             android:id="@+id/priorityBar"
             android:layout_width="0dp"

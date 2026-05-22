@@ -59,7 +59,6 @@ class AlertAdapter(
             timeTextView.text = alert.formattedTime
             typeEmojiTextView.text = alert.typeEmoji
 
-            // Set Saturated Aesthetic Colors based on Priority
             val (barColor, bgColor) = when (alert.priority) {
                 Priority.HIGH -> Pair(R.color.priority_high, R.color.priority_high_bg)
                 Priority.MEDIUM -> Pair(R.color.priority_medium, R.color.priority_medium_bg)
@@ -73,7 +72,7 @@ class AlertAdapter(
             if (alert.isRead) {
                 readStatusTextView.text = "READ"
                 readStatusTextView.setBackgroundResource(R.drawable.status_badge_read)
-                cardView.alpha = 0.6f // Visual hierarchy for read items
+                cardView.alpha = 0.6f
             } else {
                 readStatusTextView.text = "NEW"
                 readStatusTextView.setBackgroundResource(R.drawable.status_badge_new)

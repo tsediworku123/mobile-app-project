@@ -2,12 +2,12 @@ package com.example.collagealert
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.example.collagealert.databinding.ActivityLoginBinding
-import com.google.android.material.button.MaterialButton
 
 class LoginActivity : AppCompatActivity() {
 
@@ -23,11 +23,13 @@ class LoginActivity : AppCompatActivity() {
 
         setupObservers()
         setupClickListeners()
+
+        authViewModel.checkExistingSession()
     }
 
     private fun setupObservers() {
         authViewModel.userRole.observe(this) { role ->
-            if (role.isNotEmpty()) {
+            if (!role.isNullOrEmpty()) {
                 when (role) {
                     "admin" -> startActivity(Intent(this, AdminActivity::class.java))
                     else -> startActivity(Intent(this, MainActivity::class.java))
@@ -38,8 +40,33 @@ class LoginActivity : AppCompatActivity() {
 
         authViewModel.error.observe(this) { error ->
             error?.let {
-                Toast.makeText(this, "Error: $it", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
                 authViewModel.clearError()
+            }
+        }
+
+        authViewModel.updateSuccess.observe(this) { message ->
+            message?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                authViewModel.clearUpdateSuccess()
+            }
+        }
+
+        authViewModel.isLoading.observe(this) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.loginButton.isEnabled = !isLoading
+        }
+
+        authViewModel.needsEmailVerification.observe(this) { needsVerification ->
+            if (needsVerification) {
+                binding.resendVerificationButton.visibility = View.VISIBLE
+                Toast.makeText(
+                    this,
+                    "Email not verified. Check your inbox and Spam folder.",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                binding.resendVerificationButton.visibility = View.GONE
             }
         }
     }
@@ -54,6 +81,19 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             authViewModel.login(email, password)
+        }
+
+        binding.forgotPasswordLink.setOnClickListener {
+            val email = binding.emailEditText.text.toString().trim()
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Enter your email address above first", Toast.LENGTH_SHORT).show()
+            } else {
+                authViewModel.resetPassword(email)
+            }
+        }
+
+        binding.resendVerificationButton.setOnClickListener {
+            authViewModel.resendVerificationEmail()
         }
 
         binding.signUpLink.setOnClickListener {
@@ -72,6 +112,6 @@ class LoginActivity : AppCompatActivity() {
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
-        recreate() // Ensure theme change is applied immediately
+        recreate()
     }
 }

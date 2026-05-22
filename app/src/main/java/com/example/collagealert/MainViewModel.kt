@@ -43,12 +43,11 @@ class MainViewModel(private val repository: AlertRepository) : ViewModel() {
         priority: Priority, 
         createdBy: String = "Student", 
         timestamp: Long = System.currentTimeMillis(),
-        id: String? = null // Accept optional ID
+        id: String? = null
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val alertId = id ?: UUID.randomUUID().toString()
-            
-            // CHECK FOR DUPLICATES OR PREVIOUSLY DELETED
+
             val existing = repository.getAlertById(alertId)
             if (existing != null) {
                 return@launch

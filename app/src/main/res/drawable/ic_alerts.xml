@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Bell body -->
+    <path
+        android:pathData="M18,8 C18,6.4 17.37,4.84 16.24,3.71 C15.11,2.58 13.55,2 12,2 C10.45,2 8.89,2.58 7.76,3.71 C6.63,4.84 6,6.4 6,8 C6,15 3,17 3,17 L21,17 C21,17 18,15 18,8 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <!-- Bell clapper -->
+    <path
+        android:pathData="M13.73,21 C13.55,21.3 13.3,21.55 13,21.72 C12.7,21.9 12.35,22 12,22 C11.65,22 11.3,21.9 11,21.72 C10.7,21.55 10.45,21.3 10.27,21"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <!-- Alert exclamation dot -->
+    <path
+        android:pathData="M12,6 L12,10"
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"/>
+    <path
+        android:pathData="M12,13 m-0.5,0 a0.5,0.5 0 1,0 1,0 a0.5,0.5 0 1,0 -1,0"
+        android:fillColor="@color/white"/>
+</vector>

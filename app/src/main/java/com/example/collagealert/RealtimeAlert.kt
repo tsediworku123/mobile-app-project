@@ -9,12 +9,14 @@ data class RealtimeAlert(
     val timestamp: Long = System.currentTimeMillis(),
     val createdBy: String = "",
     val createdByName: String = "",
-    val targetAudience: String = "ALL"
+    val targetAudience: String = "ALL",
+    val likes: Map<String, Boolean> = emptyMap(),
+    val dislikes: Map<String, Boolean> = emptyMap(),
+    val comments: Map<String, Comment> = emptyMap()
 ) {
-    // Convert to your existing AlertData for local storage
     fun toAlertData(): AlertData {
         return AlertData(
-            id = id, // Now using String ID directly
+            id = id,
             title = title,
             message = message,
             type = when (type) {

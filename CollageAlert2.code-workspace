@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "CollageAlert2",
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
+}

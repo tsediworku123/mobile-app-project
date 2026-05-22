@@ -14,7 +14,7 @@ data class AlertEntity(
     val timestamp: Long,
     val isRead: Boolean,
     val createdBy: String,
-    val isDeleted: Boolean = false // New field to track soft deletes
+    val isDeleted: Boolean = false
 ) {
     fun toAlertData(): AlertData {
         return AlertData(

@@ -3,6 +3,7 @@ package com.example.collagealert
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -26,31 +27,36 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        authViewModel.user.observe(this) { user ->
-            if (user != null) {
-                Log.d("SIGNUP", "✅ User created: ${user.email}")
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_LONG).show()
+        authViewModel.needsEmailVerification.observe(this) { needsVerification ->
+            if (needsVerification) {
+                showVerificationPendingState()
+            }
+        }
 
-                // ALL USERS GO TO MAINACTIVITY (students)
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+        authViewModel.updateSuccess.observe(this) { message ->
+            message?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+                authViewModel.clearUpdateSuccess()
             }
         }
 
         authViewModel.error.observe(this) { error ->
             error?.let {
                 Log.e("SIGNUP", "❌ Error: $it")
-                Toast.makeText(this, "Error: $it", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
                 authViewModel.clearError()
-                binding.progressBar.visibility = android.view.View.GONE
-                binding.signUpButton.isEnabled = true
             }
         }
 
         authViewModel.isLoading.observe(this) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) android.view.View.VISIBLE else android.view.View.GONE
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.signUpButton.isEnabled = !isLoading
         }
+    }
+
+    private fun showVerificationPendingState() {
+        binding.formLayout.visibility = View.GONE
+        binding.verificationLayout.visibility = View.VISIBLE
     }
 
     private fun setupClickListeners() {
@@ -60,7 +66,6 @@ class SignUpActivity : AppCompatActivity() {
             val password = binding.passwordEditText.text.toString().trim()
             val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
 
-            // Validation
             if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -76,8 +81,16 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Call sign up with FIXED role = "student" (users are ALWAYS students)
             authViewModel.signUp(email, password, name, "student")
+        }
+
+        binding.resendEmailButton.setOnClickListener {
+            authViewModel.resendVerificationEmail()
+        }
+
+        binding.goToLoginButton.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         binding.loginLink.setOnClickListener {

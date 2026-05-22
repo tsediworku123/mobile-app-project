@@ -121,7 +121,7 @@ Password: 12345678
 ### 🤝 Contributing
     Contributions are welcome! Please follow these steps:
 # 📧 Contact
-    Kidist Kinfe - kidstekinfe@gmail.com
+    Kidist Kinfe - kidstekinfe21@gmail.com
     
     Project Link: https://github.com/kido19/CodeAlpha_CollegeAlertMobileApp.git
 

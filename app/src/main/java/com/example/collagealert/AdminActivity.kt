@@ -1,12 +1,15 @@
 package com.example.collagealert
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.collagealert.databinding.ActivityAdminBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -16,8 +19,6 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAdminBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
-    private lateinit var noticeAdapter: NoticeAdapter
-    private val noticesList = mutableListOf<RealtimeAlert>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,74 +29,43 @@ class AdminActivity : AppCompatActivity() {
         database = FirebaseDatabase.getInstance().reference
 
         checkAdminStatus()
-        setupRecyclerView()
-        setupClickListeners()
-        loadNotices()
-    }
+        setupNavigation()
+        requestNotificationPermission()
+        startNotificationListener()
 
-    private fun setupRecyclerView() {
-        noticeAdapter = NoticeAdapter(
-            notices = noticesList,
-            onDeleteClick = { notice -> showDeleteConfirmation(notice) }
-        )
-        binding.noticesRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.noticesRecyclerView.adapter = noticeAdapter
-    }
-
-    private fun loadNotices() {
-        database.child("notices").orderByChild("timestamp")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    noticesList.clear()
-                    for (noticeSnapshot in snapshot.children) {
-                        val notice = noticeSnapshot.getValue(RealtimeAlert::class.java)
-                        notice?.let { noticesList.add(0, it) }
-                    }
-                    noticeAdapter.updateData(noticesList)
-                }
-                override fun onCancelled(error: DatabaseError) {}
-            })
-    }
-
-    private fun showDeleteConfirmation(notice: RealtimeAlert) {
-        AlertDialog.Builder(this)
-            .setTitle("Delete Notice")
-            .setMessage("Are you sure?")
-            .setPositiveButton("Delete") { _, _ -> deleteNotice(notice) }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun deleteNotice(notice: RealtimeAlert) {
-        database.child("notices").child(notice.id).removeValue()
-            .addOnSuccessListener { Toast.makeText(this, "Notice deleted", Toast.LENGTH_SHORT).show() }
-    }
-
-    private fun setupClickListeners() {
-        binding.logoutButton.setOnClickListener { showLogoutConfirmation() }
-        binding.themeToggle.setOnClickListener { toggleTheme() }
-        binding.sendAlertButton.setOnClickListener { sendAlert() }
-    }
-
-    private fun toggleTheme() {
-        val mode = if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            AppCompatDelegate.MODE_NIGHT_NO
-        } else {
-            AppCompatDelegate.MODE_NIGHT_YES
+        if (savedInstanceState == null) {
+            replaceFragment(AdminAlertsFragment())
         }
-        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
-    private fun showLogoutConfirmation() {
-        AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Logout") { _, _ ->
-                auth.signOut()
-                navigateToLogin()
+    private fun setupNavigation() {
+        binding.adminBottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_alerts -> {
+                    replaceFragment(AdminAlertsFragment())
+                    true
+                }
+                R.id.navigation_news -> {
+                    replaceFragment(NewsFragment())
+                    true
+                }
+                R.id.navigation_notifications -> {
+                    replaceFragment(NotificationFragment())
+                    true
+                }
+                R.id.navigation_settings -> {
+                    replaceFragment(SettingsFragment())
+                    true
+                }
+                else -> false
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.admin_nav_host_fragment, fragment)
+            .commit()
     }
 
     private fun checkAdminStatus() {
@@ -108,7 +78,7 @@ class AdminActivity : AppCompatActivity() {
             }
     }
 
-    private fun navigateToLogin() {
+    fun navigateToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -122,47 +92,48 @@ class AdminActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun sendAlert() {
-        val title = binding.titleEditText.text.toString().trim()
-        val message = binding.messageEditText.text.toString().trim()
+    private fun startNotificationListener() {
+        val uid = auth.currentUser?.uid ?: return
+        val startTime = System.currentTimeMillis() - 5000
 
-        if (title.isEmpty() || message.isEmpty()) {
-            Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show()
-            return
-        }
+        database.child("users").child(uid).child("notifications")
+            .addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    val notif = snapshot.getValue(AppNotification::class.java)
+                    if (notif != null && notif.timestamp > startTime) {
+                        NotificationHelper.showLocalNotification(this@AdminActivity, notif.title, notif.message)
+                    }
+                }
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onChildRemoved(snapshot: DataSnapshot) {}
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onCancelled(error: DatabaseError) {}
+            })
 
-        val type = when (binding.typeChipGroup.checkedChipId) {
-            R.id.examChip -> "EXAM"
-            R.id.seminarChip -> "SEMINAR"
-            R.id.holidayChip -> "HOLIDAY"
-            R.id.noticeChip -> "NOTICE"
-            R.id.urgentChip -> "URGENT"
-            else -> "GENERAL"
-        }
+        database.child("global_notifications")
+            .addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    val notif = snapshot.getValue(AppNotification::class.java)
+                    if (notif != null && notif.timestamp > startTime) {
+                        NotificationHelper.showLocalNotification(this@AdminActivity, notif.title, notif.message)
+                    }
+                }
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onChildRemoved(snapshot: DataSnapshot) {}
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {}
+                override fun onCancelled(error: DatabaseError) {}
+            })
+    }
 
-        val priority = when (binding.priorityRadioGroup.checkedRadioButtonId) {
-            R.id.highPriority -> "HIGH"
-            R.id.mediumPriority -> "MEDIUM"
-            else -> "LOW"
-        }
-
-        binding.progressBar.visibility = android.view.View.VISIBLE
-        binding.sendAlertButton.isEnabled = false
-
-        val alertId = database.child("notices").push().key ?: return
-        val alert = RealtimeAlert(alertId, title, message, type, priority, System.currentTimeMillis(), auth.currentUser?.uid ?: "", "Admin")
-
-        database.child("notices").child(alertId).setValue(alert)
-            .addOnSuccessListener {
-                Toast.makeText(this, "✅ Alert Sent!", Toast.LENGTH_SHORT).show()
-                binding.titleEditText.text?.clear()
-                binding.messageEditText.text?.clear()
-                binding.progressBar.visibility = android.view.View.GONE
-                binding.sendAlertButton.isEnabled = true
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                    if (!isGranted) {
+                        Toast.makeText(this, "Notifications disabled. You might miss important updates.", Toast.LENGTH_LONG).show()
+                    }
+                }.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
-            .addOnFailureListener {
-                binding.progressBar.visibility = android.view.View.GONE
-                binding.sendAlertButton.isEnabled = true
-            }
+        }
     }
 }
