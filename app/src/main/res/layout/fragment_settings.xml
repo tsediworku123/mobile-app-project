@@ -88,45 +88,19 @@
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
 
-                    <FrameLayout
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/profileImage"
                         android:layout_width="72dp"
-                        android:layout_height="72dp">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/profileImage"
-                            android:layout_width="72dp"
-                            android:layout_height="72dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_default_avatar"
-                            app:shapeAppearanceOverlay="@style/CircleImageView"
-                            app:strokeColor="@color/primary"
-                            app:strokeWidth="2.5dp" />
-
-                        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                            android:id="@+id/btnEditPhoto"
-                            android:layout_width="26dp"
-                            android:layout_height="26dp"
-                            android:layout_gravity="bottom|end"
-                            android:layout_margin="0dp"
-                            app:maxImageSize="14dp"
-                            app:fabSize="mini"
-                            app:backgroundTint="@color/primary"
-                            app:srcCompat="@drawable/ic_add"
-                            app:elevation="4dp"
-                            android:contentDescription="Change profile photo" />
-                    </FrameLayout>
+                        android:layout_height="72dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_default_avatar"
+                        app:shapeAppearanceOverlay="@style/CircleImageView"
+                        app:strokeColor="@color/primary"
+                        app:strokeWidth="2.5dp" />
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="16dp">
                         <TextView android:id="@+id/profileName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Student" android:textSize="17sp" android:textStyle="bold" android:textColor="@color/text_primary" />
                         <TextView android:id="@+id/profileEmail" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="student@university.edu" android:textSize="13sp" android:textColor="@color/text_secondary" android:layout_marginTop="2dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tap photo to change"
-                            android:textSize="11sp"
-                            android:textColor="@color/primary"
-                            android:alpha="0.7"
-                            android:layout_marginTop="4dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
