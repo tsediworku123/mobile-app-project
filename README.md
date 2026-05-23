@@ -5,126 +5,108 @@ A real-time notification system for college students and administrators. Built w
 ## ✨ Features
 
 ### For Students
-- 📝 Receive real-time alerts for exams, seminars, holidays, notices, and emergencies
-- 🔔 Push notifications for new alerts
-- 📊 Track read/unread status
-- 🌙 Dark mode support
-- 🔐 Secure authentication
+- 📝 **Real-time Alerts**: Receive instant updates for exams, seminars, holidays, notices, and emergencies.
+- 📰 **News Feed**: Engage with campus news through likes, dislikes, and comments.
+- 🔔 **Push Notifications**: Get notified even when the app is closed.
+- 📊 **Alert Tracking**: Keep track of read and unread alerts.
+- 🌙 **Dark Mode**: Personalized UI with theme switching support.
+- 🔐 **Secure Auth**: Firebase-powered authentication for data safety.
 
 ### For Administrators
-- 📢 Create and broadcast alerts to all students
-- 🎯 Categorize alerts by type (Exam, Seminar, Holiday, Notice, Urgent)
-- ⚡ Set priority levels (High, Medium, Low)
-- 📋 View and manage alert history
-- 🗑️ Delete past alerts
+- 📢 **Broadcast Alerts**: Create and send alerts to the entire student body.
+- 🎯 **Categorization**: Organize alerts by type (Exam, Seminar, Holiday, Notice, Urgent).
+- ⚡ **Priority Control**: Set priority levels (High, Medium, Low) for critical updates.
+- 📋 **Management**: View, manage, and delete alert and news history.
+
+### For Both
+
+- Campus news feed loaded in real time from Firebase
+- Post new news items (title and message)
+- View all news posts with author name and timestamp
+- Like and unlike posts
+- Dislike and remove dislike on posts
+- Comment on posts with live comment updates
+- Share news via other apps (text share intent)
+- Delete own posts (or admin can delete any post)
+- In-app notifications to post authors on like, dislike, and comment
+- Personal notification inbox (likes, comments, dislikes, and related activity)
+- Notifications sorted by newest first
+- Tap a notification to mark it as read
+- Empty state when there are no notifications
+- Read/unread status per notification
+- View account name and email
+- Default profile avatar display
+- Change display username
+- Change password (with re-login prompt if session is too old)
+- Dark mode switch (saved across app restarts)
+- View app version and build info
+- Sign out with confirmation dialog
 
 ## 🛠️ Tech Stack
 
 | Component | Technology |
 |-----------|------------|
 | Language | Kotlin |
-| Local Database | Room |
+| Local Database | Room (Alert Caching) |
 | Backend | Firebase (Auth, Realtime DB, FCM) |
 | UI | Material Design 3, ViewBinding |
-| Authentication | Firebase Auth |
-| Real-time Updates | Firebase Realtime Database |
+| Preferences | SharedPreferences (Theme Settings) |
+| Async | Coroutines & LiveData |
 
+## 🚀 Key Functionalities
+
+### 📰 Campus News & Social
+- **Interactive Feed**: Post updates, share news, and see what's happening on campus.
+- **Engagement**: Built-in system for Liking, Disliking, and Commenting on posts.
+- **Sharing**: Easily share important news to external apps.
+- **Smart Notifications**: Receive alerts when users interact with your posts.
+
+### ⚙️ Account & Settings
+- **Profile Customization**: Update your display name and view account details.
+- **Security Management**: Update your password directly within the app.
+- **UI Preferences**: Toggle between Dark and Light mode for better accessibility.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Android Studio Hedgehog or newer
 - JDK 17
-- Firebase account (free tier works fine)
+- Firebase account
 
 ### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/kido19/CodeAlpha_CollegeAlertMobileApp.git
+   git clone https://github.com/tsediworku123/mobile-app-project/.git
+   ```
+
 2. **Open in Android Studio**
-    ````bash
-    File → Open → Select the cloned folder
+    - File → Open → Select the project folder
+
 3. **Set up Firebase**
-    ````bash
-    Go to Firebase Console
+    - Add `google-services.json` to the `app/` folder.
+    - Enable **Email/Password** Authentication in Firebase Console.
+    - Create a **Realtime Database**.
 
-    Create new project or use existing
-
-    Add Android app with package name: com.example.collagealert
-
-    Download google-services.json
-
-    Place it in app/ folder
-
-4. **Enable Firebase Services**
-    ````bash
-    Authentication → Sign-in method → Enable Email/Password
-
-    Realtime Database → Create database in test mode
-   
-5. **Build and run**
-    ````bash
-    Click the Run button or use ./gradlew build
-
+4. **Build and run**
+    - Click the **Run** button or use `./gradlew installDebug`.
 
 ## 📱 How to Use
 
-### Student Account
+### Test Accounts
+- **Student**: `kidkinfe7@gmail.com` | `11223344`
+- **Admin**: `kidstekinfe21@gmail.com` | `12345678`
 
-Email: kid@gmail.com
-
-Password: 12345678
-
-Or you can register
-## Admin Account
-
-Email: admin@gmail.com  
-Password: 12345678
-
-
-## 🔧 Firebase Configuration
-### Realtime Database Rules
-
-    json 
-    {
-        "rules": {
-        ".read": "auth != null",
-        ".write": "auth != null",
-        "users": {
-        "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-    }
-    },
-    "notices": {
-    ".read": "auth != null",
-    ".write": "auth != null"
-    }
-    }
-    }
 ## 🎯 Future Enhancements
-    * Department-specific alerts
+- 🏢 Department-specific alert channels.
+- 📅 Calendar integration for exam schedules.
+- 📎 Image and file attachments for alerts.
+- 📈 Admin analytics dashboard for student engagement.
 
-    * Push notification scheduling
-
-    *Image/file attachments
-
-    *Analytics dashboard for admins
-
-    *Comment section on alerts
-
-    *Email notifications
-
-    *Calendar integration
-
-### 🤝 Contributing
-    Contributions are welcome! Please follow these steps:
+## 🤝 Contributing
+Contributions are welcome! Feel free to open an issue or submit a pull request.
 
 ## 🙏 Acknowledgments
-    Firebase Documentation
-    
-    Android Developers
-    
-    Material Design
-
+- Firebase Documentation
+- Android Developers
+- Material Design Team
