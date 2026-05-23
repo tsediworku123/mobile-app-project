@@ -109,4 +109,4 @@ Contributions are welcome! Feel free to open an issue or submit a pull request.
 ## 🙏 Acknowledgments
 - Firebase Documentation
 - Android Developers
-- Material Design Team
+- Material Design
