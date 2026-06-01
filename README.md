@@ -6,6 +6,7 @@ A real-time notification system for college students and administrators. Built w
 
 ### For Students
 - 📝 **Real-time Alerts**: Receive instant updates for exams, seminars, holidays, notices, and emergencies.
+- ⏰ **Personal Reminders**: Create, edit, and manage private tasks with local background notifications.
 - 📰 **News Feed**: Engage with campus news through likes, dislikes, and comments.
 - 🔔 **Push Notifications**: Get notified even when the app is closed.
 - 📊 **Alert Tracking**: Keep track of read and unread alerts.
@@ -18,42 +19,24 @@ A real-time notification system for college students and administrators. Built w
 - ⚡ **Priority Control**: Set priority levels (High, Medium, Low) for critical updates.
 - 📋 **Management**: View, manage, and delete alert and news history.
 
-### For Both
-
-- Campus news feed loaded in real time from Firebase
-- Post new news items (title and message)
-- View all news posts with author name and timestamp
-- Like and unlike posts
-- Dislike and remove dislike on posts
-- Comment on posts with live comment updates
-- Share news via other apps (text share intent)
-- Delete own posts (or admin can delete any post)
-- In-app notifications to post authors on like, dislike, and comment
-- Personal notification inbox (likes, comments, dislikes, and related activity)
-- Notifications sorted by newest first
-- Tap a notification to mark it as read
-- Empty state when there are no notifications
-- Read/unread status per notification
-- View account name and email
-- Default profile avatar display
-- Change display username
-- Change password (with re-login prompt if session is too old)
-- Dark mode switch (saved across app restarts)
-- View app version and build info
-- Sign out with confirmation dialog
-
 ## 🛠️ Tech Stack
 
 | Component | Technology |
 |-----------|------------|
 | Language | Kotlin |
-| Local Database | Room (Alert Caching) |
+| Local Database | Room (Alert Caching & Personal Reminders) |
 | Backend | Firebase (Auth, Realtime DB, FCM) |
+| Task Scheduling | WorkManager (Reminder Notifications) |
 | UI | Material Design 3, ViewBinding |
 | Preferences | SharedPreferences (Theme Settings) |
 | Async | Coroutines & LiveData |
 
 ## 🚀 Key Functionalities
+
+### ⏰ Personal Reminders
+- **Private Tasks**: Create personal reminders for assignments, study sessions, or deadlines that stay only on your device.
+- **Full CRUD**: Easily add, view, edit, or delete your reminders with a horizontal management carousel.
+- **Background Alerts**: Integrated with WorkManager to ensure you get notified at the exact time, even if the app isn't running.
 
 ### 📰 Campus News & Social
 - **Interactive Feed**: Post updates, share news, and see what's happening on campus.
