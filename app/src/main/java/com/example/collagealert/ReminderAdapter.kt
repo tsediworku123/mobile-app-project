@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ReminderAdapter(
-    private val onCheckedChange: (ReminderEntity, Boolean) -> Unit
+    private val onCheckedChange: (ReminderEntity, Boolean) -> Unit,
+    private val onLongClick: (ReminderEntity) -> Unit
 ) : ListAdapter<ReminderEntity, ReminderAdapter.ReminderViewHolder>(ReminderDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
@@ -30,10 +31,16 @@ class ReminderAdapter(
             val sdf = SimpleDateFormat("MMM dd, hh:mm a", Locale.getDefault())
             binding.reminderTime.text = sdf.format(Date(reminder.dateTime))
             
+            binding.reminderCheckbox.setOnCheckedChangeListener(null) // Clear listener first to avoid trigger during bind
             binding.reminderCheckbox.isChecked = reminder.isCompleted
             
             binding.reminderCheckbox.setOnCheckedChangeListener { _, isChecked ->
                 onCheckedChange(reminder, isChecked)
+            }
+
+            binding.root.setOnLongClickListener {
+                onLongClick(reminder)
+                true
             }
         }
     }

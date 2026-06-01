@@ -119,6 +119,17 @@ class MainViewModel(
         }
     }
 
+    fun updateReminder(reminder: ReminderEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            reminderRepository.update(reminder)
+            // Reschedule notification
+            workManager.cancelAllWorkByTag("reminder_${reminder.id}")
+            if (!reminder.isCompleted) {
+                scheduleReminderNotification(reminder.id, reminder.title, reminder.description, reminder.dateTime)
+            }
+        }
+    }
+
     private fun scheduleReminderNotification(id: Long, title: String, description: String, dateTime: Long) {
         val delay = dateTime - System.currentTimeMillis()
         if (delay > 0) {
@@ -143,6 +154,12 @@ class MainViewModel(
             reminderRepository.updateCompletionStatus(id, completed)
             if (completed) {
                 workManager.cancelAllWorkByTag("reminder_$id")
+            } else {
+                // If unmarking as done, re-schedule if time is in future
+                val reminder = reminderRepository.getReminderById(id)
+                reminder?.let {
+                    scheduleReminderNotification(it.id, it.title, it.description, it.dateTime)
+                }
             }
         }
     }

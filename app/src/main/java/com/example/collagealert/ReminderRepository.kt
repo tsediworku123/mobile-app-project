@@ -25,4 +25,8 @@ class ReminderRepository(private val reminderDao: ReminderDao) {
     suspend fun updateCompletionStatus(id: Long, completed: Boolean) {
         reminderDao.updateCompletionStatus(id, completed)
     }
+
+    suspend fun getReminderById(id: Long): ReminderEntity? {
+        return reminderDao.getReminderById(id)
+    }
 }
