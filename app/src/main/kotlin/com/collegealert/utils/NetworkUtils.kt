@@ -32,4 +32,13 @@ object NetworkUtils {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return connectivityManager.isActiveNetworkMetered
     }
+    /**
+     * Check if connection is WiFi (useful for downloading large files)
+     */
+    fun isWifiConnection(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+    }
 }
