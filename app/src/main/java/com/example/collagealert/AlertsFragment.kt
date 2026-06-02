@@ -1,9 +1,13 @@
 package com.example.collagealert
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
@@ -22,7 +26,8 @@ class AlertsFragment : Fragment() {
     private val binding get() = _binding!!
     
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: AlertAdapter
+    private lateinit var alertAdapter: AlertAdapter
+    private lateinit var reminderAdapter: ReminderAdapter
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
 
@@ -42,7 +47,7 @@ class AlertsFragment : Fragment() {
         database = FirebaseDatabase.getInstance().reference
 
         setupDatabase()
-        setupRecyclerView()
+        setupRecyclerViews()
         setupClickListeners()
         setupObservers()
         updateUIInfo()
@@ -50,20 +55,37 @@ class AlertsFragment : Fragment() {
     }
 
     private fun setupDatabase() {
+        val application = requireActivity().application
         val db = AppDatabase.getDatabase(requireContext())
-        val repository = AlertRepository(db.alertDao())
-        val factory = MainViewModelFactory(repository)
+        val alertRepository = AlertRepository(db.alertDao())
+        val reminderRepository = ReminderRepository(db.reminderDao())
+        val factory = MainViewModelFactory(application, alertRepository, reminderRepository)
         viewModel = ViewModelProvider(requireActivity(), factory)[MainViewModel::class.java]
     }
 
-    private fun setupRecyclerView() {
-        adapter = AlertAdapter(emptyList(), { showAlertDetails(it) }, { showAlertOptions(it) })
+    private fun setupRecyclerViews() {
+        // Alerts RecyclerView
+        alertAdapter = AlertAdapter(emptyList(), { showAlertDetails(it) }, { showAlertOptions(it) })
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = alertAdapter
+
+        // Reminders RecyclerView
+        reminderAdapter = ReminderAdapter(
+            onCheckedChange = { reminder, isChecked ->
+                viewModel.updateReminderCompletion(reminder.id, isChecked)
+            },
+            onLongClick = { reminder ->
+                showReminderOptionsDialog(reminder)
+            }
+        )
+        binding.remindersRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.remindersRecyclerView.adapter = reminderAdapter
     }
 
     private fun setupClickListeners() {
         binding.themeToggle.setOnClickListener { toggleTheme() }
+
+        binding.addReminderButton.setOnClickListener { showReminderDialog(null) }
 
         binding.examCard.setOnClickListener {
             viewModel.addAlert(AlertType.EXAM, "Mid-term Exams", "Schedule published", Priority.HIGH, "Student")
@@ -104,12 +126,89 @@ class AlertsFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.alerts.observe(viewLifecycleOwner) { alerts ->
-            adapter.updateData(alerts)
-            if (alerts.isNotEmpty()) binding.recyclerView.smoothScrollToPosition(0)
+            alertAdapter.updateData(alerts)
         }
+        
         viewModel.unreadCount.observe(viewLifecycleOwner) { count -> 
             binding.statsNumber.text = count.toString() 
         }
+
+        viewModel.upcomingReminders.observe(viewLifecycleOwner) { reminders ->
+            reminderAdapter.submitList(reminders)
+            binding.noRemindersText.visibility = if (reminders.isEmpty()) View.VISIBLE else View.GONE
+            binding.remindersScroll.visibility = if (reminders.isEmpty()) View.GONE else View.VISIBLE
+        }
+    }
+
+    private fun showReminderOptionsDialog(reminder: ReminderEntity) {
+        val options = arrayOf("Edit", "Delete")
+        AlertDialog.Builder(requireContext())
+            .setTitle("Reminder Options")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> showReminderDialog(reminder)
+                    1 -> viewModel.deleteReminder(reminder)
+                }
+            }
+            .show()
+    }
+
+    private fun showReminderDialog(reminder: ReminderEntity?) {
+        val context = requireContext()
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(if (reminder == null) "Add Personal Reminder" else "Edit Reminder")
+
+        val layout = LinearLayout(context)
+        layout.orientation = LinearLayout.VERTICAL
+        layout.setPadding(50, 20, 50, 10)
+
+        val titleInput = EditText(context)
+        titleInput.hint = "Title (e.g., Submit Assignment)"
+        if (reminder != null) titleInput.setText(reminder.title)
+        layout.addView(titleInput)
+
+        val descInput = EditText(context)
+        descInput.hint = "Description (Optional)"
+        if (reminder != null) descInput.setText(reminder.description)
+        layout.addView(descInput)
+
+        builder.setView(layout)
+
+        builder.setPositiveButton("Next") { _, _ ->
+            val title = titleInput.text.toString()
+            if (title.isBlank()) {
+                Toast.makeText(context, "Title is required", Toast.LENGTH_SHORT).show()
+                return@setPositiveButton
+            }
+            showDateTimePicker(reminder, title, descInput.text.toString())
+        }
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
+    }
+
+    private fun showDateTimePicker(reminder: ReminderEntity?, title: String, description: String) {
+        val currentCalendar = Calendar.getInstance()
+        if (reminder != null) currentCalendar.timeInMillis = reminder.dateTime
+
+        DatePickerDialog(requireContext(), { _, year, month, day ->
+            TimePickerDialog(requireContext(), { _, hour, minute ->
+                val calendar = Calendar.getInstance()
+                calendar.set(year, month, day, hour, minute)
+                
+                if (reminder == null) {
+                    viewModel.addReminder(title, description, calendar.timeInMillis)
+                    Toast.makeText(requireContext(), "Reminder added!", Toast.LENGTH_SHORT).show()
+                } else {
+                    val updatedReminder = reminder.copy(
+                        title = title,
+                        description = description,
+                        dateTime = calendar.timeInMillis
+                    )
+                    viewModel.updateReminder(updatedReminder)
+                    Toast.makeText(requireContext(), "Reminder updated!", Toast.LENGTH_SHORT).show()
+                }
+            }, currentCalendar.get(Calendar.HOUR_OF_DAY), currentCalendar.get(Calendar.MINUTE), false).show()
+        }, currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DAY_OF_MONTH)).show()
     }
 
     private fun toggleTheme() {
