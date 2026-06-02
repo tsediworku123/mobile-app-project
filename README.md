@@ -6,7 +6,6 @@ A real-time notification system for college students and administrators. Built w
 
 ### For Students
 - 📝 **Real-time Alerts**: Receive instant updates for exams, seminars, holidays, notices, and emergencies.
-- ⏰ **Personal Reminders**: Create, edit, and manage private tasks with local background notifications.
 - 📰 **News Feed**: Engage with campus news through likes, dislikes, and comments.
 - 🔔 **Push Notifications**: Get notified even when the app is closed.
 - 📊 **Alert Tracking**: Keep track of read and unread alerts.
@@ -32,12 +31,6 @@ A real-time notification system for college students and administrators. Built w
 | Async | Coroutines & LiveData |
 
 ## 🚀 Key Functionalities
-
-### ⏰ Personal Reminders
-- **Private Tasks**: Create personal reminders for assignments, study sessions, or deadlines that stay only on your device.
-- **Full CRUD**: Easily add, view, edit, or delete your reminders with a horizontal management carousel.
-- **Background Alerts**: Integrated with WorkManager to ensure you get notified at the exact time, even if the app isn't running.
-
 ### 📰 Campus News & Social
 - **Interactive Feed**: Post updates, share news, and see what's happening on campus.
 - **Engagement**: Built-in system for Liking, Disliking, and Commenting on posts.
@@ -85,6 +78,7 @@ A real-time notification system for college students and administrators. Built w
 - 📅 Calendar integration for exam schedules.
 - 📎 Image and file attachments for alerts.
 - 📈 Admin analytics dashboard for student engagement.
+- ⏰ Personal Reminders private tasks with local background notifications.
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to open an issue or submit a pull request.
