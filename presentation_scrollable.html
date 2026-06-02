@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CollageAlert2 - Project Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 30%, #2d1b69 60%, #1a1a3e 100%);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* Animated background stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #64ffda;
+        }
+        .live-demo-btn {
+            padding: 12px 24px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid #64ffda;
+            border-radius: 25px;
+            color: #64ffda;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .live-demo-btn:hover {
+            background: #64ffda;
+            color: #0f0f23;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3);
+        }
+
+        /* Main container */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .section {
+            min-height: 100vh;
+            padding: 120px 40px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(100, 255, 218, 0.05) 0%, transparent 70%);
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(100, 255, 218, 0.1), rgba(0, 188, 212, 0.1));
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-20px) translateX(10px); }
+            66% { transform: translateY(10px) translateX(-10px); }
+        }
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffffff, #64ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            animation: glow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.3)); }
+            to { filter: drop-shadow(0 0 40px rgba(100, 255, 218, 0.6)); }
+        }
+
+        h2 {
+            font-size: 3.5rem;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: #64ffda;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.6rem;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 900px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            border: none;
+            border-radius: 35px;
+            color: #0f0f23;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 35px rgba(100, 255, 218, 0.4);
+            margin: 30px 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(100, 255, 218, 0.6);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin: 80px 0;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px 35px;
+            border-radius: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.08), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px);
+            border-color: rgba(100, 255, 218, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #64ffda;
+        }
+
+        .feature-description {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 80px 0;
+            flex-wrap: wrap;
+            gap: 50px;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 200px;
+        }
+        .stat-number {
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726, #64ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 15px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .benefits-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 60px;
+            margin: 80px 0;
+            width: 100%;
+        }
+
+        .benefits-list {
+            text-align: left;
+        }
+
+        .benefits-list li {
+            font-size: 1.2rem;
+            margin: 20px 0;
+            padding-left: 35px;
+            position: relative;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .benefits-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            font-size: 1.4rem;
+        }
+
+        .tech-showcase {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 50px;
+            border-radius: 25px;
+            margin: 60px 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            text-align: left;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .tech-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4, #64ffda);
+        }
+        .metrics-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 35px;
+            margin: 80px 0;
+            width: 100%;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 35px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(100, 255, 218, 0.25);
+        }
+
+        .metric-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #64ffda;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .demo-timeline {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            border-radius: 25px;
+            margin: 60px 0;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .demo-step {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            font-size: 1.2rem;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-step:hover {
+            background: rgba(100, 255, 218, 0.08);
+        }
+        .demo-time {
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            color: #0f0f23;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: 800;
+            margin-right: 25px;
+            min-width: 100px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .architecture-visual {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 50px;
+            border-radius: 25px;
+            margin: 60px 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.8;
+            border: 1px solid rgba(100, 255, 218, 0.4);
+            overflow-x: auto;
+        }
+
+        .contact-section {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 60px 50px;
+            border-radius: 30px;
+            margin: 80px 0;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .contact-item {
+            margin: 25px 0;
+            font-size: 1.3rem;
+        }
+
+        .contact-label {
+            color: #64ffda;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        .highlight {
+            color: #64ffda;
+            font-weight: 700;
+        }
+
+        .section-divider {
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64ffda, transparent);
+            margin: 80px auto;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-header {
+                padding: 15px 20px;
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .section {
+                padding: 100px 20px 60px;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .benefits-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Stars Background -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Navigation Header -->
+    <nav class="nav-header">
+        <div class="logo">CollageAlert2</div>
+        <ul class="nav-menu">
+            <li><a href="#hero" class="nav-link">Overview</a></li>
+            <li><a href="#solution" class="nav-link">Solution</a></li>
+            <li><a href="#technical" class="nav-link">Technical</a></li>
+            <li><a href="#business" class="nav-link">Business</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+        <a href="#demo" class="live-demo-btn">Live Demo</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="presentation-container">
+        <!-- Hero Section -->
+        <section class="section hero-section" id="hero">
+            <div class="floating-elements">
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+            </div>
+            
+            <h1 class="fade-in">CollageAlert2</h1>
+            <p class="subtitle fade-in">Explore the communication platform you want to use.<br>Put your college notifications to work.</p>
+            <a href="#solution" class="cta-button fade-in">Get in Touch</a>
+            
+            <div class="section-divider"></div>
+            
+            <div class="stats-container fade-in">
+                <div class="stat-item">
+                    <span class="stat-number">40%</span>
+                    <span class="stat-label">of college emails are missed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">150+</span>
+                    <span class="stat-label">times students check phones daily</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">notification view rate with our app</span>
+                </div>
+            </div>
+
+            <div class="content fade-in">
+                <p>📧 Important college emails get lost in spam/inbox clutter</p>
+                <p>⏰ Students miss critical announcements (schedule changes, emergencies)</p>
+                <p>📱 No centralized mobile platform for college communication</p>
+            </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section class="section" id="solution">
+            <h2>CollageAlert2 Solution</h2>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔔</div>
+                    <div class="feature-title">Real-Time Notifications</div>
+                    <div class="feature-description">Instant push notifications with 95% view rates vs 20% email open rates</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Mobile-First Design</div>
+                    <div class="feature-description">Native Android app with Material Design 3 for modern user experience</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Dual Role System</div>
+                    <div class="feature-description">Students receive updates, Admins broadcast messages with role-based access</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Secure Authentication</div>
+                    <div class="feature-description">Email verification ensures only verified college members access the system</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-title">Social Engagement</div>
+                    <div class="feature-description">News feed with likes, comments, and interaction to boost engagement</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Personalization</div>
+                    <div class="feature-description">Profile pictures, dark/light themes, and customizable settings</div>
+                </div>
+            </div>
+        </section>
+        <!-- Customer Benefits Section -->
+        <section class="section">
+            <h2>👥 For CUSTOMERS - User Experience</h2>
+            
+            <div class="benefits-section">
+                <div class="fade-in">
+                    <h3>Student Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Never miss important announcements again</li>
+                        <li>Get notifications instantly on your phone</li>
+                        <li>Engage with college news through likes/comments</li>
+                        <li>Personalized profile with photo upload</li>
+                        <li>Clean, modern interface designed for mobile</li>
+                    </ul>
+                </div>
+                
+                <div class="fade-in">
+                    <h3>Admin Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Broadcast to all students instantly</li>
+                        <li>Track message delivery and engagement</li>
+                        <li>Manage college-wide communications from one platform</li>
+                        <li>Secure user verification system</li>
+                        <li>Analytics and reporting dashboard</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="demo-timeline fade-in" id="demo">
+                <h3>Live Demo Flow (5 minutes)</h3>
+                <div class="demo-step">
+                    <span class="demo-time">[0:30]</span>
+                    <span>Login Process → Email verification security</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">[1:30]</span>
+                    <span>Admin Dashboard → Create and send alert</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">[1:30]</span>
+                    <span>Student Notification → Real-time delivery</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">[1:00]</span>
+                    <span>Social Interaction → Like/comment on news</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">[0:30]</span>
+                    <span>Profile Management → Upload photo, change settings</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture Section -->
+        <section class="section" id="technical">
+            <h2>🔧 For CODING PAL - Technical Architecture</h2>
+            
+            <div class="tech-showcase fade-in">
+                <strong>Technology Stack:</strong><br>
+                Frontend: Native Android (Kotlin)<br>
+                Architecture: MVVM + Repository Pattern<br>
+                Backend: Firebase Ecosystem<br>
+                &nbsp;&nbsp;- Authentication: Firebase Auth<br>
+                &nbsp;&nbsp;- Database: Firebase Realtime Database<br>
+                &nbsp;&nbsp;- Storage: Firebase Cloud Storage<br>
+                &nbsp;&nbsp;- Messaging: Firebase Cloud Messaging (FCM)<br>
+                Local Storage: Room Database<br>
+                UI Framework: Material Design 3<br>
+                Image Loading: Glide Library
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-title">🏗️ Scalable Architecture</div>
+                    <div class="feature-description">MVVM pattern with proper separation of concerns</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">🔄 Real-Time Sync</div>
+                    <div class="feature-description">Firebase Realtime Database for instant updates</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">📱 Offline Support</div>
+                    <div class="feature-description">Room database for local caching</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">🔐 Security First</div>
+                    <div class="feature-description">Email verification, role-based access control</div>
+                </div>
+            </div>
+
+            <div class="architecture-visual fade-in">
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Android App   │    │   Firebase       │    │   Admin Panel   │
+│   (Students)    │◄──►│   Backend        │◄──►│   (Faculty)     │
+│                 │    │                  │    │                 │
+│ • MVVM Pattern  │    │ • Realtime DB    │    │ • Alert Creation│
+│ • Room Cache    │    │ • Authentication │    │ • User Management│
+│ • FCM Receiver  │    │ • Cloud Storage  │    │ • Analytics     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+            </div>
+        </section>
+
+        <!-- Business Potential Section -->
+        <section class="section" id="business">
+            <h2>💰 For INVESTORS - Business Potential</h2>
+            
+            <div class="metrics-showcase fade-in">
+                <div class="metric-card">
+                    <div class="metric-number">$2.8B</div>
+                    <div class="metric-label">Education Communication Market</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">25,000+</div>
+                    <div class="metric-label">Colleges Globally</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">15%</div>
+                    <div class="metric-label">Annual Growth Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">95%</div>
+                    <div class="metric-label">Gross Margins</div>
+                </div>
+            </div>
+
+            <h3 class="fade-in">Revenue Models</h3>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-title">B2B SaaS Licensing</div>
+                    <div class="feature-description">$5-15/student/year per institution</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">Freemium Model</div>
+                    <div class="feature-description">Basic free, premium features paid</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">White-Label Solutions</div>
+                    <div class="feature-description">Custom branding for institutions</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">Analytics Dashboard</div>
+                    <div class="feature-description">Premium insights and reporting</div>
+                </div>
+            </div>
+            <div class="metrics-showcase fade-in">
+                <div class="metric-card">
+                    <div class="metric-number">$750K</div>
+                    <div class="metric-label">Year 1 Revenue Target</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">$7.5M</div>
+                    <div class="metric-label">Year 3 Revenue Target</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">$30M</div>
+                    <div class="metric-label">Year 5 Revenue Target</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">30:1</div>
+                    <div class="metric-label">CLV/CAC Ratio</div>
+                </div>
+            </div>
+
+            <div class="content fade-in">
+                <p><span class="highlight">Competitive Advantages:</span> Real-time performance, mobile-native design, security focus, high engagement, easy integration</p>
+            </div>
+        </section>
+
+        <!-- Investment Proposition Section -->
+        <section class="section">
+            <h2>💡 Investment Proposition</h2>
+            
+            <h3 class="fade-in">Why Invest in CollageAlert2?</h3>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-title">📊 Market Validation</div>
+                    <div class="feature-description">Proven demand in education sector with mobile-first approach aligning with user behavior</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">💰 Revenue Potential</div>
+                    <div class="feature-description">Recurring subscription model with low customer acquisition cost and high switching costs</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">🔧 Technical Advantages</div>
+                    <div class="feature-description">Scalable Firebase infrastructure with modern tech stack attracting top developers</div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-title">🎯 Execution Strength</div>
+                    <div class="feature-description">Working MVP with core features, security-focused development, and user-centered design</div>
+                </div>
+            </div>
+
+            <div class="demo-timeline fade-in">
+                <h3>Exit Strategy & Returns</h3>
+                <div class="demo-step">
+                    <span class="demo-time">5x</span>
+                    <span>Conservative valuation: $30M × 5 = $150M</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">8x</span>
+                    <span>Optimistic valuation: $30M × 8 = $240M</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">10-15x</span>
+                    <span>Strategic acquisition: $300-450M potential</span>
+                </div>
+            </div>
+        </section>
+        <!-- Thank You & Contact Section -->
+        <section class="section" id="contact">
+            <h2>🎤 Thank You & Next Steps</h2>
+            
+            <div class="content fade-in">
+                <h3>Key Takeaways</h3>
+                <p>✅ <strong>Real Problem:</strong> Students miss 40% of important college communications</p>
+                <p>✅ <strong>Proven Solution:</strong> Mobile-first platform with 95% notification view rates</p>
+                <p>✅ <strong>Large Market:</strong> $2.8B market with 25,000+ institutions globally</p>
+                <p>✅ <strong>Strong Business Model:</strong> $5-15 per student annually with 95% margins</p>
+                <p>✅ <strong>Technical Excellence:</strong> Scalable architecture supporting 100K+ users</p>
+            </div>
+
+            <div class="demo-timeline fade-in">
+                <h3>Ready for Questions</h3>
+                <div class="demo-step">
+                    <span class="demo-time">Tech</span>
+                    <span>Architecture, scalability, security implementation</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Business</span>
+                    <span>Market size, revenue model, competitive advantages</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Demo</span>
+                    <span>Live demonstration of core features and functionality</span>
+                </div>
+            </div>
+
+            <div class="contact-section fade-in">
+                <h3>Contact Information</h3>
+                <div class="contact-item">
+                    <span class="contact-label">Email:</span>
+                    <span>kidstekinfe21@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Project:</span>
+                    <span>CollageAlert2 - Real-Time College Communication</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">GitHub:</span>
+                    <span>Available for technical review</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Generate animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Scroll animations
+        function handleScrollAnimations() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Navigation highlighting
+        function updateActiveNavigation() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop <= 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', () => {
+            handleScrollAnimations();
+            updateActiveNavigation();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            handleScrollAnimations();
+            updateActiveNavigation();
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -74,12 +74,29 @@ class MainViewModel(private val repository: AlertRepository) : ViewModel() {
         }
     }
 
+    fun markAlertAsUnread(alert: AlertData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.update(alert.copy(isRead = false))
+        }
+    }
+
     fun markLatestAsRead() {
         viewModelScope.launch(Dispatchers.IO) {
             val currentAlerts = _alerts.value
             if (!currentAlerts.isNullOrEmpty()) {
                 val latest = currentAlerts.first()
                 repository.update(latest.copy(isRead = true))
+            }
+        }
+    }
+
+    fun markAllAsUnread() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentAlerts = _alerts.value
+            if (!currentAlerts.isNullOrEmpty()) {
+                currentAlerts.forEach { alert ->
+                    repository.update(alert.copy(isRead = false))
+                }
             }
         }
     }

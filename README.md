@@ -1,130 +1,73 @@
 # 📱 College Alert App
 
-A real-time notification system for college students and administrators. Built with Kotlin and Firebase.
+A real-time notification system for college students and administrators. Built with Kotlin and Firebase, featuring local caching with Room.
 
 ## ✨ Features
 
-### For Students
-- 📝 Receive real-time alerts for exams, seminars, holidays, notices, and emergencies
-- 🔔 Push notifications for new alerts
-- 📊 Track read/unread status
-- 🌙 Dark mode support
-- 🔐 Secure authentication
+### 🔐 Authentication & Accounts
+- **Secure Login/Sign-up**: Email and password authentication via Firebase.
+- **Session Management**: Automatic session restore on app launch.
+- **Role-Based Access**: Automatic routing based on user role (Student vs. Administrator).
+- **Profile Management**: Update display name and change passwords securely within the app.
 
-### For Administrators
-- 📢 Create and broadcast alerts to all students
-- 🎯 Categorize alerts by type (Exam, Seminar, Holiday, Notice, Urgent)
-- ⚡ Set priority levels (High, Medium, Low)
-- 📋 View and manage alert history
-- 🗑️ Delete past alerts
+### 📢 Alert System (Student)
+- **Real-time Sync**: Alerts are synced instantly from Firebase Realtime Database.
+- **Categorization**: Filter alerts by **Exam, Seminar, Holiday, Notice,** and **Urgent**.
+- **Priority Levels**: Visual indicators for **High, Medium,** and **Low** priority tasks.
+- **Local Persistence**: Room database caching for offline viewing of previous alerts.
+- **Read/Unread Tracking**: Keep track of what you've seen with unread counts and status indicators.
+
+### 📰 News Feed & Social (Student)
+- **Interactive Feed**: View and post campus news updates.
+- **Engagement**: Like, Dislike, and Comment on news posts in real-time.
+- **Sharing**: Share important news via external apps using the system share sheet.
+- **Social Notifications**: Get notified when someone likes or comments on your post.
+
+### 🛠️ Administrator Panel
+- **Broadcast System**: Create and send alerts to the entire student body instantly.
+- **Notice Management**: View sent history and delete past notices.
+- **Role Control**: Secure access restricted to authorized administrator accounts.
+
+### ⚙️ Settings & UI
+- **Dark Mode**: Support for system-wide dark and light themes with manual toggle.
+- **Profile Customization**: Easily update your campus handle/name.
+- **Notification Controls**: Manage in-app and push notification permissions.
+
+---
 
 ## 🛠️ Tech Stack
+- **Language**: Kotlin
+- **Local Database**: Room (Alert Caching)
+- **Backend**: Firebase (Auth, Realtime DB, Cloud Messaging)
+- **Architecture**: MVVM with LiveData & Coroutines
+- **UI**: Material Design 3, ViewBinding
 
-| Component | Technology |
-|-----------|------------|
-| Language | Kotlin |
-| Local Database | Room |
-| Backend | Firebase (Auth, Realtime DB, FCM) |
-| UI | Material Design 3, ViewBinding |
-| Authentication | Firebase Auth |
-| Real-time Updates | Firebase Realtime Database |
-
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Android Studio Hedgehog or newer
+- Android Studio (Hedgehog or newer recommended)
 - JDK 17
-- Firebase account (free tier works fine)
+- `google-services.json` from your Firebase project
 
 ### Installation
+1. Clone the repository.
+2. Place your `google-services.json` in the `app/` directory.
+3. Open the project in Android Studio and sync Gradle.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/kido19/CodeAlpha_CollegeAlertMobileApp.git
-2. **Open in Android Studio**
-    ````bash
-    File → Open → Select the cloned folder
-3. **Set up Firebase**
-    ````bash
-    Go to Firebase Console
+---
 
-    Create new project or use existing
+## 🔧 Troubleshooting
 
-    Add Android app with package name: com.example.collagealert
+### Fixing the `jlink` Executable Error
+If you encounter an error like `Cause: jlink executable ... does not exist`, it's because Gradle is pointing to a JRE instead of a full JDK (often caused by VS Code Java extensions).
 
-    Download google-services.json
+**To fix in Android Studio:**
+1. Go to **File > Settings** (or `Ctrl+Alt+S`).
+2. Navigate to **Build, Execution, Deployment > Build Tools > Gradle**.
+3. Under **Gradle JDK**, change the selection to the **Embedded JDK** (e.g., `jbr-17` or `jbr-21`).
+4. Click **Apply** and **Sync Project**.
 
-    Place it in app/ folder
-
-4. **Enable Firebase Services**
-    ````bash
-    Authentication → Sign-in method → Enable Email/Password
-
-    Realtime Database → Create database in test mode
-   
-5. **Build and run**
-    ````bash
-    Click the Run button or use ./gradlew build
-
-
-## 📱 How to Use
-
-### Student Account
-
-Email: kid@gmail.com
-
-Password: 12345678
-
-Or you can register
-## Admin Account
-
-Email: admin@gmail.com  
-Password: 12345678
-
-
-## 🔧 Firebase Configuration
-### Realtime Database Rules
-
-    json 
-    {
-        "rules": {
-        ".read": "auth != null",
-        ".write": "auth != null",
-        "users": {
-        "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
-    }
-    },
-    "notices": {
-    ".read": "auth != null",
-    ".write": "auth != null"
-    }
-    }
-    }
-## 🎯 Future Enhancements
-    * Department-specific alerts
-
-    * Push notification scheduling
-
-    *Image/file attachments
-
-    *Analytics dashboard for admins
-
-    *Comment section on alerts
-
-    *Email notifications
-
-    *Calendar integration
-
-### 🤝 Contributing
-    Contributions are welcome! Please follow these steps:
-
-## 🙏 Acknowledgments
-    Firebase Documentation
-    
-    Android Developers
-    
-    Material Design
-
+**To fix via environment:**
+Ensure your `JAVA_HOME` environment variable points to a full JDK installation, not a VS Code extension folder.

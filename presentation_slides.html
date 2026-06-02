@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CollageAlert - Project Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 30%, #2d1b69 60%, #1a1a3e 100%);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Animated background stars */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 4s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Navigation Header */
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 40px;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slide-counter {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .live-demo-btn {
+            padding: 12px 24px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid #64ffda;
+            border-radius: 25px;
+            color: #64ffda;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .live-demo-btn:hover {
+            background: #64ffda;
+            color: #0f0f23;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(100, 255, 218, 0.3);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4);
+            transition: width 0.3s ease;
+            z-index: 1001;
+        }
+        /* Slide container */
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            padding: 40px;
+            text-align: center;
+            animation: slideIn 0.6s ease-in-out;
+            overflow-y: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(100, 255, 218, 0.08), rgba(0, 188, 212, 0.08));
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            right: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            bottom: 30%;
+            left: 15%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            top: 60%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-20px) translateX(10px); }
+            66% { transform: translateY(10px) translateX(-10px); }
+        }
+        /* Typography */
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffffff, #64ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            animation: glow 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.3)); }
+            to { filter: drop-shadow(0 0 40px rgba(100, 255, 218, 0.6)); }
+        }
+
+        h2 {
+            font-size: 3.2rem;
+            margin-bottom: 40px;
+            font-weight: 700;
+            color: #64ffda;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .content {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            border: none;
+            border-radius: 30px;
+            color: #0f0f23;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 12px 30px rgba(100, 255, 218, 0.4);
+            margin: 20px 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(100, 255, 218, 0.6);
+        }
+        /* Grid layouts */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+            width: 100%;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 30px 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.08), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(100, 255, 218, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #64ffda;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 50px 0;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .stat-number {
+            font-size: 3.8rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726, #64ffda);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-bottom: 12px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+        .benefits-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 50px;
+            margin: 50px 0;
+            width: 100%;
+        }
+
+        .benefits-list {
+            text-align: left;
+        }
+
+        .benefits-list li {
+            font-size: 1.1rem;
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .benefits-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .tech-showcase {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            text-align: left;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .tech-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4, #64ffda);
+        }
+
+        .metrics-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+            width: 100%;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #64ffda, #00bcd4);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(100, 255, 218, 0.2);
+        }
+
+        .metric-number {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #64ffda;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+        .demo-timeline {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            max-width: 800px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .demo-step {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-step:hover {
+            background: rgba(100, 255, 218, 0.08);
+        }
+
+        .demo-time {
+            background: linear-gradient(45deg, #64ffda, #00bcd4);
+            color: #0f0f23;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 800;
+            margin-right: 20px;
+            min-width: 90px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .architecture-visual {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 20px;
+            margin: 40px 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            border: 1px solid rgba(100, 255, 218, 0.4);
+            overflow-x: auto;
+        }
+
+        .contact-section {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 50px 40px;
+            border-radius: 25px;
+            margin: 40px 0;
+            text-align: center;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            max-width: 600px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-item {
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .contact-label {
+            color: #64ffda;
+            font-weight: 700;
+            margin-right: 10px;
+        }
+
+        .highlight {
+            color: #64ffda;
+            font-weight: 700;
+        }
+
+        .section-divider {
+            width: 120px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #64ffda, transparent);
+            margin: 50px auto;
+        }
+        /* Navigation */
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(100, 255, 218, 0.3);
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: rgba(100, 255, 218, 0.1);
+            border: 1px solid rgba(100, 255, 218, 0.3);
+            border-radius: 25px;
+            color: #64ffda;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(100, 255, 218, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(100, 255, 218, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-header {
+                padding: 15px 20px;
+            }
+            
+            .slide {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2.2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .benefits-section {
+                grid-template-columns: 1fr;
+                gap: 35px;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .navigation {
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+            
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Stars Background -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Navigation Header -->
+    <nav class="nav-header">
+        <div class="logo">CollageAlert</div>
+        <div class="slide-counter" id="slideCounter">1 / 10</div>
+    </nav>
+    <!-- Main Content -->
+    <div class="presentation-container">
+        <!-- Slide 1: Hero -->
+        <div class="slide active">
+            <div class="floating-elements">
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+            </div>
+            
+            <h1>CollageAlert</h1>
+            <p class="subtitle">Explore the communication platform you want to use.<br>Put your college notifications to work.</p>
+            <a href="#" class="cta-button">Get in Touch</a>
+            
+            <div class="section-divider"></div>
+            
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="stat-number">Most</span>
+                    <span class="stat-label">of college emails are missed</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">150+</span>
+                    <span class="stat-label">times students check phones daily</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">notification view rate with our app</span>
+                </div>
+            </div>
+
+            <div class="content">
+                <p>📧 Important college emails get lost in spam/inbox clutter</p>
+                <p>⏰ Students miss critical announcements (schedule changes, emergencies)</p>
+                <p>📱 No centralized mobile platform for college communication</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Solution Overview -->
+        <div class="slide">
+            <h2>CollageAlert Solution</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <div class="feature-title">Real-Time Notifications</div>
+                    <div class="feature-description">Instant push notifications with higher view rates vs 20% email open rates</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Mobile-First Design</div>
+                    <div class="feature-description">Native Android app with Material Design 3 for modern user experience</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Dual Role System</div>
+                    <div class="feature-description">Students receive updates, Admins broadcast messages with role-based access</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">Secure Authentication</div>
+                    <div class="feature-description">Email verification ensures only verified college members access the system</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <div class="feature-title">Social Engagement</div>
+                    <div class="feature-description">News feed with likes, comments, and interaction to boost engagement</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Personalization</div>
+                    <div class="feature-description">Profile with username and password, dark/light themes, and customizable settings</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: For Customers -->
+        <div class="slide">
+            <h2>👥 For CUSTOMERS - User Experience</h2>
+            
+            <div class="benefits-section">
+                <div>
+                    <h3>Student Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Never miss important announcements again</li>
+                        <li>Get notifications instantly on your phone</li>
+                        <li>Engage with college news through likes/comments</li>
+                        <li>Personalized profile</li>
+                        <li>Clean, modern interface designed for mobile</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Admin Benefits</h3>
+                    <ul class="benefits-list">
+                        <li>Broadcast to all students instantly</li>
+                        <li>Track message delivery and engagement</li>
+                        <li>Manage college-wide communications from one platform</li>
+                        <li>Secure user verification system</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <!-- Slide 4: Technical Architecture -->
+        <div class="slide">
+            <h2>🔧 For CODING PAL - Technical Architecture</h2>
+            
+            <div class="tech-showcase">
+                <strong>Technology Stack:</strong><br>
+                Frontend: Native Android (Kotlin)<br>
+                Architecture: MVVM + Repository Pattern<br>
+                Backend: Firebase Ecosystem<br>
+                &nbsp;&nbsp;- Authentication: Firebase Auth<br>
+                &nbsp;&nbsp;- Database: Firebase Realtime Database<br>
+                &nbsp;&nbsp;- Storage: Firebase Cloud Storage<br>
+                &nbsp;&nbsp;- Messaging: Firebase Cloud Messaging (FCM)<br>
+                Local Storage: Room Database<br>
+                UI Framework: Material Design 3<br>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-title">🏗️ Scalable Architecture</div>
+                    <div class="feature-description">MVVM pattern with proper separation of concerns</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">🔄 Real-Time Sync</div>
+                    <div class="feature-description">Firebase Realtime Database for instant updates</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">📱 Offline Support</div>
+                    <div class="feature-description">Room database for local caching</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">🔐 Security First</div>
+                    <div class="feature-description">Email verification, role-based access control</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Business Potential -->
+        <div class="slide">
+            <h2>💰 For INVESTORS - Business Potential</h2>
+            
+            <div class="metrics-showcase">
+                <div class="metric-card">
+                    <div class="metric-number">Large and growing </div>
+                    <div class="metric-label">Education sector with many learners.
+</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">Over 828,000</div>
+                    <div class="metric-label">University students require timely access to academic information.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">Hundreds of</div>
+                    <div class="metric-label">Private institutions need efficient communication and administrative tools.</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number">Increased</div>
+                    <div class="metric-label">Smartphone and internet usage supports digital education services.</div>
+                </div>
+                    <div class="metric-card">
+                    <div class="metric-number">Increased</div>
+                    <div class="metric-label">                
+                <div class="metric-card">
+                    <div class="metric-number">Institutions</div>
+                    <div class="metric-label">Are seeking secure, centralized systems for communication and engagement.</div>
+                </div>
+            </div>
+                </div>
+            </div>
+
+            <h3>Revenue Models</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-title">Price</div>
+                    <div class="feature-description">Flexible pricing tailored to institution size and needs</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">Freemium Model</div>
+                    <div class="feature-description">Basic free, premium features paid</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">White-Label Solutions</div>
+                    <div class="feature-description">Custom branding for institutions</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">Analytics Dashboard</div>
+                    <div class="feature-description">Premium insights and reporting</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <p><span class="highlight">Competitive Advantages:</span> Real-time performance, mobile-native design, security focus, high engagement, easy integration</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Technical Deep Dive -->
+        <div class="slide">
+            <h2>📊 Technical Deep Dive</h2>
+            
+            <div class="architecture-visual">
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Android App   │    │   Firebase       │    │   Admin Panel   │
+│   (Students)    │◄──►│   Backend        │◄──►│   (Faculty)     │
+│                 │    │                  │    │                 │
+│ • MVVM Pattern  │    │ • Realtime DB    │    │ • Alert Creation│
+│ • Room Cache    │    │ • Authentication │    │ • User Management│
+│ • FCM Receiver  │    │ • Cloud Storage  │    │ • Analytics     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+            </div>
+
+            <h3>Data Flow Process</h3>
+            <div class="demo-timeline">
+                <div class="demo-step">
+                    <span class="demo-time">Step 1</span>
+                    <span>Admin creates alert → Firebase Realtime Database</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Step 2</span>
+                    <span>Database triggers → Firebase Cloud Messaging</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Step 3</span>
+                    <span>FCM delivers → Student devices instantly</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Step 4</span>
+                    <span>Local storage → Room database for offline access</span>
+                </div>
+                <div class="demo-step">
+                    <span class="demo-time">Step 5</span>
+                    <span>User interaction → Synced back to Firebase</span>
+                </div>
+            </div>
+        </div>
+        <!-- Slide 7: Implementation Highlights -->
+        <div class="slide">
+            <h2>🚀 Implementation Highlights</h2>
+            
+            <div class="benefits-section">
+                <div>
+                    <h3>Code Quality Metrics</h3>
+                    <ul class="benefits-list">
+                        <li><strong>Clean Architecture:</strong> 25+ well-structured Kotlin files</li>
+                        <li><strong>Dependency Injection:</strong> Proper ViewModel factories</li>
+                        <li><strong>Error Handling:</strong> Comprehensive try-catch with user feedback</li>
+                        <li><strong>Responsive Design:</strong> Adaptive layouts for all screen sizes</li>
+                        <li><strong>Security Patterns:</strong> Input validation, secure authentication</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Performance Optimizations</h3>
+                    <ul class="benefits-list">
+                        <li><strong>Lazy Loading:</strong> Images loaded on-demand with Glide</li>
+                        <li><strong>Efficient Caching:</strong> Room database for offline functionality</li>
+                        <li><strong>Real-Time Updates:</strong> Firebase listeners for instant sync</li>
+                        <li><strong>Memory Management:</strong> Proper lifecycle handling in fragments</li>
+                        <li><strong>Network Optimization:</strong> Minimal data transfer, smart caching</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Scalability & Roadmap -->
+        <div class="slide">
+            <h2>📈 Scalability & Future Roadmap</h2>
+            
+            <div class="benefits-section">
+                <div>
+                    <h3>Current Capabilities</h3>
+                    <ul class="benefits-list">
+                        <li>Supports Many concurrent users</li>
+                        <li>Real-time messaging with &lt;2s latency</li>
+                        <li>Secure authentication system</li>
+                        <li>Social engagement features</li>
+                        <li>Cross-platform ready architecture</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>Future Enhancements</h3>
+                    <ul class="benefits-list">
+                        <li><strong>iOS App:</strong> Native iOS version</li>
+                        <li><strong>Web Dashboard:</strong> Browser-based admin panel</li>
+                        <li><strong>Analytics Suite:</strong> Engagement metrics and insights</li>
+                        <li><strong>API Integration:</strong> Connect with existing college systems</li>
+                        <li><strong>AI Features:</strong> Smart notification prioritization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Investment Proposition -->
+        <div class="slide">
+            <h2>💡 Investment Proposition</h2>
+            
+            <h3>Why Invest in CollageAlert?</h3>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-title">📊 Market Validation</div>
+                    <div class="feature-description">Proven demand in education sector with mobile-first approach aligning with user behavior</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">💰 Revenue Potential</div>
+                    <div class="feature-description">Recurring subscription model with low customer acquisition cost and high switching costs</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">🔧 Technical Advantages</div>
+                    <div class="feature-description">Scalable Firebase infrastructure with modern tech stack attracting top developers</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-title">🎯 Execution Strength</div>
+                    <div class="feature-description">Working MVP with core features, security-focused development, and user-centered design</div>
+                </div>
+            </div>
+
+        
+        </div>
+        <!-- Slide 10: Thank You & Contact -->
+        <div class="slide">
+            <h2>🎤 Thank You</h2>
+            
+
+            <div class="contact-section">
+                <h3>Contact Information</h3>
+                <div class="contact-item">
+                    <span class="contact-label">Project:</span>
+                    <span>CollageAlert - Real-Time College Communication</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        // Generate animated stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const numStars = 150;
+            
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 4 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Slide navigation
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            
+            // Update slide counter
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(direction) {
+            if (direction === 1 && currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            } else if (direction === -1 && currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                changeSlide(1);
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                changeSlide(-1);
+            } else if (event.key === 'Home') {
+                event.preventDefault();
+                showSlide(0);
+            } else if (event.key === 'End') {
+                event.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>

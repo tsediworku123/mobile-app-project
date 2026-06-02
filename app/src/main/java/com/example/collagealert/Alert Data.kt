@@ -6,7 +6,7 @@ import java.util.Locale
 import java.util.UUID
 
 enum class AlertType {
-    EXAM, SEMINAR, HOLIDAY, NOTICE, URGENT, GENERAL
+    EXAM, SEMINAR, HOLIDAY, NOTICE, URGENT, GENERAL, NEWS
 }
 
 enum class Priority {
@@ -45,6 +45,7 @@ data class AlertData(
             AlertType.HOLIDAY -> "🏖️"
             AlertType.NOTICE -> "📢"
             AlertType.URGENT -> "🚨"
+            AlertType.NEWS -> "📰"
             AlertType.GENERAL -> "📌"
         }
 

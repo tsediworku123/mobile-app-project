@@ -152,11 +152,26 @@ class AlertsFragment : Fragment() {
     }
 
     private fun showAlertOptions(alert: AlertData) {
+        val options = if (alert.isRead) {
+            arrayOf("Mark as Unread", "Delete")
+        } else {
+            arrayOf("Mark as Read", "Delete")
+        }
+        
         AlertDialog.Builder(requireContext())
             .setTitle("Options")
-            .setItems(arrayOf("Mark as Read", "Delete")) { _, which ->
-                if (which == 0) viewModel.markAlertAsRead(alert)
-                else viewModel.deleteAlert(alert)
+            .setItems(options) { _, which ->
+                if (which == 0) {
+                    if (alert.isRead) {
+                        viewModel.markAlertAsUnread(alert)
+                        Toast.makeText(requireContext(), "Alert marked as unread", Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.markAlertAsRead(alert)
+                        Toast.makeText(requireContext(), "Alert marked as read", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    viewModel.deleteAlert(alert)
+                }
             }.show()
     }
 

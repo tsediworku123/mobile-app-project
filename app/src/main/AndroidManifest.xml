@@ -60,11 +60,6 @@
             android:name=".AdminActivity"
             android:exported="false" />
 
-        <!-- For handling notification clicks -->
-        <activity
-            android:name=".NotificationDetailActivity"
-            android:exported="false" />
-
     </application>
 
 </manifest>
